@@ -96,15 +96,23 @@ buttons.forEach(button => {
       return;
     }
 
-    // Operators (+ - * /)
-    if (["+", "-", "*", "/"].includes(value)) {
+    // Operators (+ - * /) and their Unicode variants (+ − × ÷)
+    if (["+", "-", "*", "/", "−", "×", "÷"].includes(value)) {
+      // Map Unicode operators to standard operators
+      const operatorMap = {
+        "−": "-",
+        "×": "*",
+        "÷": "/"
+      };
+      const standardOp = operatorMap[value] ?? value;
+      
       // If there's a pending operator and the user already entered the next number,
       // compute the pending result first (allows chaining).
       if (operator && !waitingForNewValue) {
         calculate();
       }
       // store the operator and mark that we are waiting for the next number
-      operator = value;
+      operator = standardOp;
       previousValue = currentValue;
       waitingForNewValue = true;
       justCalculated = false;
@@ -132,9 +140,9 @@ const keyToButtonValue = {
   Escape: "AC",
   Backspace: "⌫",
   Delete: "AC",
-  "/": "/",
-  "*": "*",
-  "-": "-",
+  "/": "÷",
+  "*": "×",
+  "-": "−",
   "+": "+",
   "%": "%",
   ".": ".",
